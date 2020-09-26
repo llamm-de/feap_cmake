@@ -8,7 +8,7 @@ This configuration is still under development and does only support unix like op
 ### Prerequisites
 Before installing the CMake support for FEAP, please make shure that you have the FEAP sourcecode available an your system. Information on how to purchase this software can be found at the [FEAP website](http://projects.ce.berkeley.edu/feap/) of the University of California Berkeley.
 
-Next, make sure you have a recent installation of [Python](https://www.python.org) installed on your system. This is required for the installation process, if you do not want to copy the CMake configuration files by hand.
+Next, make sure you have a recent installation of [Python](https://www.python.org) installed on your system. This is required for the installation process, if you do not want to copy the CMake configuration files by hand. To install the dependencies of the Python script, you can either use *pipenv* or install the dependencies globally by using ```pip3 install -r requirements.txt```.
 
 Now, you can clone the repository by using 
 ```

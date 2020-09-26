@@ -3,11 +3,15 @@ from progress.bar import IncrementalBar
 from os import path
 import sys
 import glob
+from shutil import copyfile
 
 
 INSTALL_DIR = ""
 INSTALL_OPTIONS = {"remove_makefiles": False,
                    "auto_build": True}
+DIRECTORIES = ["","contact", "elements" , "main", "packages/arpack", 
+               "packages/blas", "packages/lapack", "packages/meshmod", 
+               "packages/paraview", "plot", "program", "program/memory", "unix", "user"]
 
 def welcome_screen():
     print("\n ______ ______          _____  __  __          _  ________")
@@ -81,8 +85,17 @@ def setup_install():
 def install():
     global INSTALL_DIR
     global INSTALL_OPTIONS
+    global DIRECTORIES
     
     print("Copying CMakeLists.txt files ...")
+    bar = IncrementalBar("Progress", max=len(DIRECTORIES))
+    for directory in DIRECTORIES:
+        src = "files/" + directory + "/CMakeLists.txt"
+        dst = INSTALL_DIR + "/" + directory + "/CMakeLists.txt"
+        copyfile(src, dst)
+        bar.next()
+        time.sleep(0.1)
+    bar.finish
 
     if INSTALL_OPTIONS["remove_makefiles"]:
         print("Removing old makefiles ...")
@@ -95,7 +108,6 @@ def install():
 
 if __name__ == "__main__": 
     welcome_screen()
-    setup_install()
+    #setup_install()
+    INSTALL_DIR = "testfiles"
     install()
-    #mylist = [1,2,3,4,5,6,7,8]
-    #display_progress_bar(mylist, label="Copying CMake files ")

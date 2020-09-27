@@ -1,18 +1,19 @@
 import time
 from progress.bar import IncrementalBar
-from os import path, mkdir, chdir, remove
+from os import path, mkdir, chdir, remove, rmdir, getcwd
 import sys
 import glob
-from shutil import copyfile
+from shutil import copyfile, rmtree
 import subprocess
 
-
+BASE_DIR = getcwd()
 INSTALL_DIR = ""
 INSTALL_OPTIONS = {"remove_makefiles": True,
                    "auto_build": True}
-DIRECTORIES = ["","contact", "elements" , "main", "packages/arpack", 
-               "packages/blas", "packages/lapack", "packages/meshmod", 
-               "packages/paraview", "plot", "program", "program/memory", "unix", "user"]
+DIRECTORIES = ["","/contact", "/elements" , "/main", "/packages/arpack", 
+               "/packages/blas", "/packages/lapack", "/packages/meshmod", 
+               "/packages/paraview", "/plot", "/program", "/program/memory", 
+               "/unix", "/user"]
 
 def welcome_screen():
     print("\n ______ ______          _____  __  __          _  ________")
@@ -87,12 +88,13 @@ def install():
     global INSTALL_DIR
     global INSTALL_OPTIONS
     global DIRECTORIES
+    global BASE_DIR
     
     print("Copying CMakeLists.txt files ...")
     bar = IncrementalBar("Progress", max=len(DIRECTORIES))
     for directory in DIRECTORIES:
-        src = "files/" + directory + "/CMakeLists.txt"
-        dst = INSTALL_DIR + "/" + directory + "/CMakeLists.txt"
+        src = "files" + directory + "/CMakeLists.txt"
+        dst = INSTALL_DIR  + directory + "/CMakeLists.txt"
         copyfile(src, dst)
         bar.next()
         time.sleep(0.1)
@@ -102,7 +104,7 @@ def install():
         print("Removing old makefiles ...")
         bar = IncrementalBar("Progress", max=len(DIRECTORIES))
         for directory in DIRECTORIES:
-            file_path = INSTALL_DIR + "/" + directory + "/Makefile"
+            file_path = INSTALL_DIR + directory + "/makefile"
             try:
                 remove(file_path)
             except:
@@ -115,18 +117,22 @@ def install():
     if INSTALL_OPTIONS["auto_build"]:
 
         print("Generating build directory ...")
-        if not path.exists(INSTALL_DIR + "/build"):
-            mkdir(INSTALL_DIR + "/build")
-        else:
-            if not query_yey_or_no("Build directory already exists. Do you want to continue anyways?"): 
+        if path.exists(INSTALL_DIR + "/build"):
+            if not query_yey_or_no("Build directory already exists. Do you want to OVERWRITE it?"): 
                 exit()
-        
+            else:
+                rmtree(INSTALL_DIR + "/build", ignore_errors=True)
+        mkdir(INSTALL_DIR + "/build")
+
         print("Running CMake ...")
         chdir(INSTALL_DIR + "/build")
         subprocess.call(["cmake", ".."])
 
         print("Building FEAP ...")
-        subprocess.call("make")
+        subprocess.call(["make", "-j4"])
+
+        print("\n Congratulations! You have sucessfully set up FEAP with CMake!")
+        chdir(BASE_DIR)
 
 
 if __name__ == "__main__": 

@@ -60,8 +60,6 @@ add_subdirectory(../user ../user)
 add_subdirectory(../packages/arpack ../packages/arpack)
 add_subdirectory(../packages/meshmod ../packages/meshmod)
 add_subdirectory(../packages/paraview ../packages/paraview)
-add_subdirectory(../packages/tensorTools ../packages/tensorTools)
-add_subdirectory(../packages/libtt ../packages/libtt)
 
 #--------------------------------------------------------------------#
 
@@ -81,8 +79,6 @@ target_link_libraries(feap
                       arpack
                       meshmod
                       paraview
-                      tensorTools
-                      tensortools
                       ${X11_LIBRARIES}
                       ${LAPACK_LIBRARIES}
                       )

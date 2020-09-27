@@ -1,13 +1,14 @@
 import time
 from progress.bar import IncrementalBar
-from os import path
+from os import path, mkdir, chdir, remove
 import sys
 import glob
 from shutil import copyfile
+import subprocess
 
 
 INSTALL_DIR = ""
-INSTALL_OPTIONS = {"remove_makefiles": False,
+INSTALL_OPTIONS = {"remove_makefiles": True,
                    "auto_build": True}
 DIRECTORIES = ["","contact", "elements" , "main", "packages/arpack", 
                "packages/blas", "packages/lapack", "packages/meshmod", 
@@ -95,19 +96,40 @@ def install():
         copyfile(src, dst)
         bar.next()
         time.sleep(0.1)
-    bar.finish
+    bar.finish()
 
     if INSTALL_OPTIONS["remove_makefiles"]:
         print("Removing old makefiles ...")
+        bar = IncrementalBar("Progress", max=len(DIRECTORIES))
+        for directory in DIRECTORIES:
+            file_path = INSTALL_DIR + "/" + directory + "/Makefile"
+            try:
+                remove(file_path)
+            except:
+                pass
+            bar.next()
+            time.sleep(0.1)
+        bar.finish()
+
 
     if INSTALL_OPTIONS["auto_build"]:
+
         print("Generating build directory ...")
+        if not path.exists(INSTALL_DIR + "/build"):
+            mkdir(INSTALL_DIR + "/build")
+        else:
+            if not query_yey_or_no("Build directory already exists. Do you want to continue anyways?"): 
+                exit()
+        
         print("Running CMake ...")
+        chdir(INSTALL_DIR + "/build")
+        subprocess.call(["cmake", ".."])
+
         print("Building FEAP ...")
+        subprocess.call("make")
 
 
 if __name__ == "__main__": 
     welcome_screen()
-    #setup_install()
-    INSTALL_DIR = "testfiles"
+    setup_install()
     install()

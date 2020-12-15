@@ -46,7 +46,7 @@ def query_install_dir():
 
 
 def check_install_dir(dir):
-    if path.isfile(dir+"/main/feap84.f") or path.isfile(dir+"/main/feap86.f"):
+    if path.isfile(dir+"/main/feap84.f"): # or path.isfile(dir+"/main/feap86.f"):
         return True
     else:
         return False

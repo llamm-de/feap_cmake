@@ -17,15 +17,16 @@ enable_language(Fortran)
 
 # Set debug mode as standard
 # Use option -DCMAKE_BUILD_TYPE=Release for performance optimization
-if(NOT CMAKE_BUILD_TYPE)
+if(NOT CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL Debug)
     set(CMAKE_BUILD_TYPE Debug)
-    set(CMAKE_Fortan_FLAGS_DEBUG "-Wall -Wextra -O0 -g")
+    set(CMAKE_Fortran_FLAGS_DEBUG "-Wall -Wextra -O0 -g")
+    message("-- Build type: ${CMAKE_BUILD_TYPE}")
+    message("-- Compiler flags: ${CMAKE_Fortran_FLAGS_DEBUG}")
 elseif(CMAKE_BUILD_TYPE STREQUAL Release)
-    set(CMAKE_Fortan_FLAGS_RELEASE "-O2")
+    set(CMAKE_Fortran_FLAGS_RELEASE "-O2")
+    message("-- Build type: ${CMAKE_BUILD_TYPE}")
+    message("-- Compiler flags: ${CMAKE_Fortran_FLAGS_RELEASE}")
 endif()
-
-message("-- Build type: ${CMAKE_BUILD_TYPE}")
-message("-- Compiler flags: ${CMAKE_Fortran_FLAGS_DEBUG}")
 
 # Set option for memory routines
 if((NOT FEAP_MEMORY) OR (NOT FEAP_MEMORY STREQUAL large))
